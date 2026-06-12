@@ -1,6 +1,7 @@
 #include "archiver.h"
 #include "huffman_tree.h"
-#include "bit_io.h"
+#include "bit_writer.h"
+#include "bit_reader.h"
 #include <vector>
 #include <fstream>
 #include <iostream>

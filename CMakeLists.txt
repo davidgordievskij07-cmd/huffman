@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(huffman_archiver
     main.cpp
-    bit_io.h
+    bit_writer.h
+    bit_reader.h
     bit_io.cpp
     huffman_tree.h
     huffman_tree.cpp

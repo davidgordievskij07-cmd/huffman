@@ -1,49 +1,49 @@
-#include "bit_io.h"
+#include "bit_writer.h"
+#include "bit_reader.h"
 
-BitWriter::BitWriter(std::ofstream& output) : out(output), buffer(0), bitCount(0) {}
+
+BitWriter::BitWriter(std::ostream& os) : out(os), buffer(0), bit_count(0) {}
+
+BitWriter::~BitWriter() {
+    flush();
+}
 
 void BitWriter::writeBit(int bit) {
-
-    buffer = buffer << 1;
-
-
-    if (bit == 1) {
-        buffer = buffer | 1;
+    if (bit) {
+        buffer |= (1 << (7 - bit_count));
     }
-    bitCount++;
+    bit_count++;
 
-
-    if (bitCount == 8) {
+    if (bit_count == 8) {
         out.put(static_cast<char>(buffer));
         buffer = 0;
-        bitCount = 0;
+        bit_count = 0;
     }
 }
 
 void BitWriter::flush() {
-
-    if (bitCount > 0) {
-        buffer = buffer << (8 - bitCount);
+    if (bit_count > 0) {
         out.put(static_cast<char>(buffer));
         buffer = 0;
-        bitCount = 0;
+        bit_count = 0;
     }
+    out.flush();
 }
 
-BitReader::BitReader(std::ifstream& input) : in(input), buffer(0), bitCount(8) {}
+
+BitReader::BitReader(std::istream& is) : in(is), buffer(0), bit_count(8) {}
 
 int BitReader::readBit() {
-
-    if (bitCount == 8) {
+    if (bit_count == 8) {
         char ch;
         if (!in.get(ch)) {
             return -1;
         }
         buffer = static_cast<uint8_t>(ch);
-        bitCount = 0;
+        bit_count = 0;
     }
 
-    int bit = (buffer >> (7 - bitCount)) & 1;
-    bitCount++;
+    int bit = (buffer >> (7 - bit_count)) & 1;
+    bit_count++;
     return bit;
 }
